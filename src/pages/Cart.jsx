@@ -493,7 +493,7 @@ const Cart = () => {
   };
 
   function parseProductVariables(input) {
-    if (!input) return {};
+    if (typeof input !== 'string' || !input) return {};
 
     const allowedProperties = ['A', 'B', 'C', 'P1', 'P2', 'X', 'Y'];
     const result = {};
