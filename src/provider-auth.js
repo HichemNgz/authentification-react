@@ -11,7 +11,9 @@ async function getToken() {
 
 function handleUserResponse(response) {
   //il faut mettre console.log de response pour faire la déstructuration (connaitre quoi distructurer)
+  window.localStorage.setItem('userInfos', JSON.stringify(response.user));
   window.localStorage.setItem(localStorageKey, response.token);
+  
 
   return response;
 }
@@ -23,9 +25,19 @@ function login({ email, password }) {
 function register({ email, password }) {
   return client('register', { email, password }).then(handleUserResponse);
 }
-
+// const getCustomerId = async (data) => {
+//   try {
+//     const response = await client('check-account', { data });
+//     console.log({ youcef: response });
+//     return response;
+//   } catch (error) {
+//     console.error('Error fetching customer ID:', error);
+//     throw error;
+//   }
+// };
 async function logout() {
   window.localStorage.removeItem(localStorageKey);
+  window.localStorage.removeItem("userInfos");
 }
 
 // an auth provider wouldn't use your client, they'd have their own

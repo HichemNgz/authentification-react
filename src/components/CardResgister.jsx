@@ -1,14 +1,63 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Formik, Form, useField } from 'formik';
 import * as Yup from 'yup';
 import CardShadow from './CardShadow';
 import MyTextInput from '../core/MyTextInput';
 import MySelect from '../core/MySelect';
 import SimpleWhiteCard from '../core/Card/SimpleWhiteCard';
+import { useDebouncedValue } from '@/Hook/useDebouncedValue';
+import { getCustomerId } from '@/utils/callingapi';
+import {
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  useDisclosure,
+  Button
+} from '@chakra-ui/react';
 
 export default function CardResgister({ handleSubmit, customClass }) {
+  const [inputValue, setInputValue] = useState('');
+  const [customerId, setCustomerId] = useState('');
+
+  const debouncedValue = useDebouncedValue(inputValue, 500);
+
+  useEffect(() => {
+    const fetchCustomerId = async () => {
+      if (debouncedValue) {
+        try {
+          const data = { id: debouncedValue };
+          const customerId = await getCustomerId(data);
+          setCustomerId(customerId);
+        } catch (error) {
+          // console.error('Failed to fetch customer ID:', error);
+          showErrorModal(); // hedi fonction as component
+        }
+      }
+    };
+
+    fetchCustomerId();
+  }, [debouncedValue]);
+  const showErrorModal = () => {
+    // voici le component en question
+    return () => (
+      <ModalError isOpen={true}>
+        <div>c'est un mauvais id </div>
+      </ModalError>
+    );
+  };
+
   return (
     <div className="flex justify-center items-center" style={{ height: '95%' }}>
+      {customerId && (
+        <div className="mt-4">
+          <h3 className="text-gray-700 font-bold mb-2">Result:</h3>
+          <pre>{JSON.stringify(customerId, null, 2)}</pre>
+        </div>
+      )}
       <Formik
         initialValues={{
           //Business Information
@@ -47,7 +96,7 @@ export default function CardResgister({ handleSubmit, customClass }) {
         onSubmit={(values, { setSubmitting }, event) => {
           console.log({ values, setSubmitting });
         }}>
-        <Form className="h-full w-full">
+        <Form className="h-full w-full" onSubmit={handleSubmit}>
           <div className={`flex justify-center items-center h-full ${customClass} `}>
             <CardShadow
               customClass={` w-11/12  p-4 h-max shadow-md bg-white bg-opacity-60 flex flex-col lg:flex-row lg:space-x-4 gap-3 `}>
@@ -55,10 +104,11 @@ export default function CardResgister({ handleSubmit, customClass }) {
                 <SimpleWhiteCard title="Business Information">
                   <MyTextInput
                     label="Customer ID"
-                    name="customerId"
+                    name="id"
                     type="number"
                     placeholder="9348219"
-                    autofocus
+                    autoFocus
+                    onChange={(e) => setInputValue(e.target.value)}
                   />
                   <MyTextInput
                     label="Company Name"

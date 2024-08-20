@@ -5,7 +5,19 @@ import CardBody from '../core/Card/CardBody';
 import CardFooter from '../core/Card/CardFooter';
 import CardHeader from '../core/Card/CardHeader';
 import Logo from '../assets/IR2.jpg';
-export default function CardLogin({ handleSubmit, customClass }) {
+import { useState, useEffect } from 'react';
+export default function CardLogin({ handleSubmit, customClass, errorMessage = '' }) {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+
+  useEffect(() => {
+    if (email && password) {
+      setIsButtonDisabled(false);
+    } else {
+      setIsButtonDisabled(true);
+    }
+  }, [email, password]);
   return (
     <>
       <div className={`flex  h-full items-center  ${customClass} `} style={{ height: '80%' }}>
@@ -28,25 +40,41 @@ export default function CardLogin({ handleSubmit, customClass }) {
                 <input
                   id="email"
                   name="email"
-                  type="text"
+                  type="email"
                   placeholder="email@domain.com"
-                  // defaultValue="benton98@example.org"
+                  onChange={(e) => setEmail(e.target.value)}
                   className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-400"
                 />
+                {errorMessage ? (
+                  <span className=" top-0 right-4 mt-3 text-sm text-red-500 lg:mr-10 mr-4">
+                    Invalid email address.{' '}
+                  </span>
+                ) : null}
               </div>
-              <div className="pt-4 px-4">
+              <div className="pt-4 px-4 ">
                 <input
                   id="password"
                   name="password"
                   type="password"
                   placeholder="Password"
+                  onChange={(e) => setPassword(e.target.value)}
                   className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-400"
                 />
+                {errorMessage ? (
+                  <span className=" top-0 right-4 mt-3 text-sm text-red-500 lg:mr-10 mr-4">
+                    Incorrect password{' '}
+                  </span>
+                ) : null}
               </div>
               <div className="pt-6 px-4">
                 <button
                   type="submit"
-                  className="w-full px-4 py-2 bg-green-800 text-white rounded-md hover:bg-green-700 focus:outline-none focus:bg-green-700">
+                  disabled={isButtonDisabled}
+                  className={`w-full px-4 py-2 rounded-md focus:outline-none ${
+                    isButtonDisabled
+                      ? 'bg-gray-400 cursor-not-allowed'
+                      : 'bg-green-800 text-white hover:bg-green-700 focus:bg-green-700'
+                  }`}>
                   logIn
                 </button>
               </div>

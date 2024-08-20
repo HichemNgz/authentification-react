@@ -2,43 +2,56 @@ import React from 'react';
 import { useAsync } from '../../utils/hooks';
 import { useAuth } from '../../context/auth-context.jsx';
 import CardLogin from '../../components/CardLogin.jsx';
-import { useDebouncedValue } from '../../Hook/useDebouncedValue.jsx';
+import { useEffect } from 'react';
+import Toast from '@/core/Toast/Toast';
+import { useState } from 'react';
+
 export default function Login() {
   const { isLoading, isError, error, run } = useAsync();
   const { login } = useAuth();
-
+  const [toastVisible, setToastVisible] = useState(true);
   async function handleSubmit(event) {
     event.preventDefault();
     const { email, password } = event.target.elements;
-    // la function run a besoin d'une promise pour passer du mode deconecter au mode connecter
     await run(
       login({
         email: email.value,
         password: password.value
       })
     );
-    // const [value, setValue] = useState('');
-    // const debouncedSearchTerm = useDebouncedValue(value, 500);
 
-    useEffect(() => {}, [debouncedSearchTerm]);
+    // useEffect(() => {}, [debouncedSearchTerm]);
   }
+
+  const handleCloseToast = () => {
+    setToastVisible(false);
+  };
   if (isLoading) {
     return (
-      <>
-        <div>ici le speaner</div>
-      </>
+      <div className="w-full h-full">
+        <div className="flex justify-center items-center">
+          <div className="w-16 h-16 border-4 border-dashed rounded-full animate-spin border-blue-500"></div>
+        </div>{' '}
+      </div>
     );
   }
-  if (isError)
-    return (
-      <>
-        {error}
-        <div>error</div>
-      </>
-    );
+
   return (
     <div>
-      <CardLogin handleSubmit={handleSubmit} customClass="lg:justify-end justify-center " />
+      {isError && toastVisible && (
+        <div>
+          <Toast
+            message="Incorrect email or password."
+            duration={5000}
+            onClose={handleCloseToast}
+          />
+        </div>
+      )}
+      <CardLogin
+        handleSubmit={handleSubmit}
+        customClass="lg:justify-end justify-center "
+        errorMessage={isError ? 'errorMessage' : ''}
+      />
     </div>
   );
 }

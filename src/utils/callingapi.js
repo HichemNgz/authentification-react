@@ -1,6 +1,17 @@
-import * as api from "./apiWithToken";
-
+import * as api from './apiWithToken';
+import { client } from './api-client';
 function getUser() {
-  return api.GET("users");
+  return api.GET('users');
 }
-export { getUser };
+// ici j'appel la route check-account
+const getCustomerId = async (data) => {
+  try {
+    const response = await client('check-account', { data });
+    console.log({ youcef: response });
+    return response;
+  } catch (error) {
+    console.error('Error fetching customer ID:', error);
+    throw error;
+  }
+};
+export { getUser, getCustomerId };

@@ -1,19 +1,16 @@
-import { QueryCache } from "@tanstack/react-query";
-import * as auth from "../provider-auth";
+import { QueryCache } from '@tanstack/react-query';
+import * as auth from '../provider-auth';
 
-async function client(
-  endpoint,
-  { data, headers: customHeaders, ...customConfig } = {}
-) {
+async function client(endpoint, { data, headers: customHeaders, ...customConfig } = {}) {
   const config = {
-    method: data ? "POST" : "GET",
+    method: data ? 'POST' : 'GET',
     body: data ? JSON.stringify(data) : undefined,
     headers: {
       Authorization: undefined,
-      "Content-Type": data ? "application/json" : undefined,
-      ...customHeaders,
+      'Content-Type': data ? 'application/json' : undefined,
+      ...customHeaders
     },
-    ...customConfig,
+    ...customConfig
   };
   const queryCache = new QueryCache();
   return window
@@ -24,7 +21,7 @@ async function client(
         await auth.logout();
         // refresh the page for them
         window.location.assign(window.location);
-        return Promise.reject({ message: "Please re-authenticate." });
+        return Promise.reject({ message: 'Please re-authenticate.' });
       }
       const data = await response.json();
       if (response.ok) {

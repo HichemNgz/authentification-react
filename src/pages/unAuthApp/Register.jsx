@@ -21,18 +21,18 @@ export default function Register() {
   if (isLoading)
     return (
       <>
-        hey hey <div>kader</div>
+        loading ...... <div> ........loading</div>
       </>
     );
   if (isError)
     return (
       <>
         {error}
-        <div>kader</div>
+        <div>{error}</div>
       </>
     );
   return (
-    <div className="h-full" style={{ border: '1px solid red', height: '1000 px' }}>
+    <div className="h-full">
       <CardResgister handleSubmit={handleSubmit} customClass=" justify-center " />
 
       {/* <form onSubmit={handleSubmit}>

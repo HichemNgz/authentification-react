@@ -15,6 +15,7 @@ import { useState, useEffect } from 'react';
 function AppRoutes() {
   return (
     <Routes>
+      <Route path="/" element={<Login />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="*" element={<RedirectToLogin />} />{' '}
